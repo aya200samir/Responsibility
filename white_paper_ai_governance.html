@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>White Paper: Probabilistic AI Governance</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0D1B2A;
+    --navy-mid: #162435;
+    --navy-light: #1E3148;
+    --gold: #C9A84C;
+    --gold-light: #E2C97E;
+    --gold-pale: #F5EDD5;
+    --cream: #FAF7F2;
+    --ink: #1A1A1A;
+    --ink-mid: #3D3D3D;
+    --ink-light: #6B6B6B;
+    --rule: #D4C9B0;
+    --green-zone: #1A4731;
+    --green-zone-bg: #EAF4EE;
+    --green-accent: #2D8653;
+    --amber-zone: #5C3D0D;
+    --amber-zone-bg: #FDF4E3;
+    --amber-accent: #D4860F;
+    --red-zone: #5C1212;
+    --red-zone-bg: #FDF0F0;
+    --red-accent: #C92B2B;
+  }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  /* ── COVER PAGE ── */
+  .cover {
+    background: var(--navy);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+  }
+
+  .cover-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.07) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .cover-top-rule {
+    height: 3px;
+    background: var(--gold);
+    width: 100%;
+  }
+
+  .cover-inner {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 64px 72px;
+  }
+
+  .cover-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 80px;
+  }
+
+  .cover-title-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .cover-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(201,168,76,0.7);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .cover-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 700;
+    color: #FFFFFF;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .cover-title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .cover-subtitle {
+    font-size: 17px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.65);
+    max-width: 560px;
+    line-height: 1.7;
+    margin-top: 20px;
+  }
+
+  .cover-rule {
+    width: 64px;
+    height: 2px;
+    background: var(--gold);
+    margin: 36px 0;
+  }
+
+  .cover-meta {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 48px;
+    border-top: 0.5px solid rgba(201,168,76,0.25);
+  }
+
+  .cover-author-block {}
+
+  .cover-author-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #FFFFFF;
+  }
+
+  .cover-author-title {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+  }
+
+  .cover-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: rgba(201,168,76,0.6);
+    text-align: right;
+  }
+
+  /* ── LAYOUT ── */
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 80px 64px;
+  }
+
+  @media (max-width: 700px) {
+    .cover-inner { padding: 40px 32px; }
+    .page { padding: 56px 28px; }
+  }
+
+  /* ── SECTION STRUCTURE ── */
+  .section {
+    margin-bottom: 72px;
+  }
+
+  .section-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.2;
+    margin-bottom: 28px;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.3;
+    margin-bottom: 18px;
+  }
+
+  h2 em {
+    font-style: italic;
+    color: var(--ink-mid);
+  }
+
+  h3 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    margin-top: 32px;
+  }
+
+  p {
+    color: var(--ink-mid);
+    margin-bottom: 18px;
+    font-size: 15.5px;
+  }
+
+  p strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* ── HORIZONTAL RULE ── */
+  .divider {
+    border: none;
+    border-top: 0.5px solid var(--rule);
+    margin: 56px 0;
+  }
+
+  /* ── EXEC SUMMARY BOX ── */
+  .exec-summary {
+    background: var(--navy);
+    border-radius: 4px;
+    padding: 40px 44px;
+    margin-bottom: 56px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .exec-summary::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+  }
+
+  .exec-summary .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .exec-summary p {
+    color: rgba(255,255,255,0.8);
+    font-size: 15px;
+    line-height: 1.85;
+    margin-bottom: 14px;
+  }
+
+  .exec-summary p:last-child { margin-bottom: 0; }
+
+  .exec-summary p strong {
+    color: #FFFFFF;
+  }
+
+  /* ── PULL QUOTE ── */
+  .pull-quote {
+    border-left: 2px solid var(--gold);
+    padding: 4px 0 4px 28px;
+    margin: 36px 0;
+  }
+
+  .pull-quote p {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    font-style: italic;
+    color: var(--navy);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* ── GAUSSIAN CURVE VISUAL ── */
+  .curve-container {
+    background: white;
+    border: 0.5px solid var(--rule);
+    border-radius: 8px;
+    padding: 40px 32px 32px;
+    margin: 36px 0;
+  }
+
+  .curve-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--ink-light);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  /* ── THREE ZONES ── */
+  .zones-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 36px 0;
+  }
+
+  @media (max-width: 600px) {
+    .zones-grid { grid-template-columns: 1fr; }
+  }
+
+  .zone-card {
+    border-radius: 6px;
+    padding: 28px 24px;
+    position: relative;
+  }
+
+  .zone-card.green {
+    background: var(--green-zone-bg);
+    border: 1px solid rgba(45,134,83,0.25);
+  }
+
+  .zone-card.amber {
+    background: var(--amber-zone-bg);
+    border: 1px solid rgba(212,134,15,0.25);
+  }
+
+  .zone-card.red {
+    background: var(--red-zone-bg);
+    border: 1px solid rgba(201,43,43,0.25);
+  }
+
+  .zone-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-bottom: 16px;
+  }
+
+  .zone-card.green .zone-indicator { background: var(--green-accent); }
+  .zone-card.amber .zone-indicator { background: var(--amber-accent); }
+  .zone-card.red .zone-indicator { background: var(--red-accent); }
+
+  .zone-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .zone-card.green .zone-label { color: var(--green-accent); }
+  .zone-card.amber .zone-label { color: var(--amber-accent); }
+  .zone-card.red .zone-label { color: var(--red-accent); }
+
+  .zone-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .zone-card.green .zone-title { color: var(--green-zone); }
+  .zone-card.amber .zone-title { color: var(--amber-zone); }
+  .zone-card.red .zone-title { color: var(--red-zone); }
+
+  .zone-desc {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink-mid);
+    margin: 0;
+  }
+
+  .zone-threshold {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    margin-top: 16px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  .zone-card.green .zone-threshold { background: rgba(45,134,83,0.12); color: var(--green-zone); }
+  .zone-card.amber .zone-threshold { background: rgba(212,134,15,0.12); color: var(--amber-zone); }
+  .zone-card.red .zone-threshold { background: rgba(201,43,43,0.12); color: var(--red-zone); }
+
+  /* ── LIABILITY TABLE ── */
+  .liability-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 14px;
+  }
+
+  .liability-table thead tr {
+    background: var(--navy);
+    color: white;
+  }
+
+  .liability-table thead th {
+    padding: 14px 18px;
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    font-weight: 500;
+  }
+
+  .liability-table tbody tr {
+    border-bottom: 0.5px solid var(--rule);
+  }
+
+  .liability-table tbody tr:nth-child(even) {
+    background: rgba(0,0,0,0.025);
+  }
+
+  .liability-table tbody td {
+    padding: 14px 18px;
+    color: var(--ink-mid);
+    vertical-align: top;
+  }
+
+  .liability-table tbody td:first-child {
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ── KEY PRINCIPLES LIST ── */
+  .principles-list {
+    list-style: none;
+    margin: 24px 0;
+  }
+
+  .principles-list li {
+    display: flex;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 0.5px solid var(--rule);
+    align-items: flex-start;
+  }
+
+  .principles-list li:last-child { border-bottom: none; }
+
+  .principle-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    min-width: 28px;
+    padding-top: 3px;
+  }
+
+  .principle-text {
+    flex: 1;
+  }
+
+  .principle-text strong {
+    display: block;
+    font-family: 'Source Serif 4', serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+
+  .principle-text span {
+    font-size: 14px;
+    color: var(--ink-light);
+    line-height: 1.65;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    display: flex;
+    gap: 20px;
+    background: var(--gold-pale);
+    border: 1px solid rgba(201,168,76,0.35);
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin: 28px 0;
+    align-items: flex-start;
+  }
+
+  .callout-icon {
+    font-size: 20px;
+    min-width: 28px;
+  }
+
+  .callout-body {
+    flex: 1;
+  }
+
+  .callout-body strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+
+  .callout-body p {
+    font-size: 14px;
+    color: var(--ink-mid);
+    margin: 0;
+    line-height: 1.65;
+  }
+
+  /* ── CONCLUSION BLOCK ── */
+  .conclusion-block {
+    background: var(--navy);
+    color: white;
+    border-radius: 8px;
+    padding: 52px 56px;
+    margin-top: 56px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .conclusion-block::after {
+    content: '';
+    position: absolute;
+    right: -30px; bottom: -30px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.15);
+  }
+
+  .conclusion-block h2 {
+    color: white;
+    margin-bottom: 24px;
+    font-size: 28px;
+  }
+
+  .conclusion-block p {
+    color: rgba(255,255,255,0.75);
+    font-size: 15px;
+  }
+
+  .conclusion-block p strong {
+    color: var(--gold-light);
+  }
+
+  /* ── FOOTER ── */
+  .doc-footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 0.5px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .doc-footer span {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ink-light);
+  }
+
+  /* ── HASHTAG KEYWORDS ── */
+  .keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 28px;
+  }
+
+  .keyword {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--navy);
+    background: rgba(13,27,42,0.07);
+    border-radius: 3px;
+    padding: 5px 10px;
+  }
+
+  /* ── FORMULA BOX ── */
+  .formula-box {
+    background: var(--navy-light);
+    border-radius: 6px;
+    padding: 28px 32px;
+    margin: 28px 0;
+    text-align: center;
+  }
+
+  .formula-box .formula-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba(201,168,76,0.7);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .formula-box .formula-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 17px;
+    color: white;
+    line-height: 1.6;
+    letter-spacing: 0.05em;
+  }
+
+  .formula-box .formula-note {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    margin-top: 12px;
+    display: block;
+    font-style: italic;
+  }
+
+  /* Print */
+  @media print {
+    .cover { min-height: 100vh; }
+    .page { padding: 60px 48px; }
+    body { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ COVER ═══ -->
+<div class="cover">
+  <div class="cover-grid"></div>
+  <div class="cover-top-rule"></div>
+  <div class="cover-inner">
+    <div class="cover-label">White Paper &nbsp;·&nbsp; AI Governance &nbsp;·&nbsp; 2026</div>
+
+    <div class="cover-title-block">
+      <div class="cover-eyebrow">An Original Framework for Legal Accountability in AI-Driven Environments</div>
+
+      <h1 class="cover-title">
+        The Normal Distribution<br>
+        of <em>Responsibility</em>
+      </h1>
+
+      <div class="cover-rule"></div>
+
+      <p class="cover-subtitle">
+        A Statistical Framework for AI Liability, Probabilistic Governance, and Human-Centric Accountability in High-Risk &amp; Conflict Environments
+      </p>
+    </div>
+
+    <div class="cover-meta">
+      <div class="cover-author-block">
+        <div class="cover-author-name">Aya Samir</div>
+        <div class="cover-author-title">AI Governance &amp; Legal Technology Consultant &nbsp;·&nbsp; Law, Data &amp; Policy</div>
+      </div>
+      <div class="cover-date">
+        APRIL 2026<br>
+        FIRST EDITION
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ BODY ═══ -->
+<div class="page">
+
+  <!-- EXECUTIVE SUMMARY -->
+  <div class="section">
+    <div class="exec-summary">
+      <span class="label">Executive Summary</span>
+      <p>
+        Current AI governance frameworks are built on a fundamentally flawed premise: that law can treat artificial intelligence outputs as deterministic events subject to binary standards of negligence. They cannot. AI systems are inherently probabilistic — and the legal world has yet to reckon with what that means.
+      </p>
+      <p>
+        This White Paper presents an original framework: <strong>Probabilistic AI Governance (PAG)</strong>. Rather than asking "was the AI accurate?", PAG asks the more precise and legally actionable question: <strong>"Where on the output distribution did this decision fall — and was a human present when it mattered most?"</strong>
+      </p>
+      <p>
+        The framework operationalises this through a novel application of the <strong>Normal (Gaussian) Distribution</strong> of AI outputs as a legal threshold, defining three governance zones — Safe (Green), Advisory (Amber), and Danger (Red) — each carrying distinct obligations of human oversight and legal liability.
+      </p>
+      <p>
+        In high-stakes environments, particularly warfare and armed conflict, where AI systems are already influencing targeting, intelligence analysis, and command decisions, this framework argues that existing legal standards of care must be recalibrated from deterministic to probabilistic logic. The consequences of failure are not technical errors. They are potential violations of International Humanitarian Law.
+      </p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 1 -->
+  <div class="section">
+    <span class="section-number">Section I</span>
+    <h2>The Accountability Gap: Why Current AI Law Is Failing</h2>
+
+    <p>
+      Modern AI legislation — including the European Union's AI Act (2024), the U.S. Executive Order on AI (2023), and the broader declarations emerging from international summits such as Bletchley (2023) — represents genuine progress. These instruments acknowledge risk, mandate transparency, and begin to trace the contours of liability.
+    </p>
+
+    <p>
+      Yet they share a common, critical failure: <strong>they speak in categories, not in calculus.</strong> They classify AI systems by domain (healthcare, defence, judiciary) and attach risk labels accordingly. They mandate "human oversight" in general terms. What they do not do — what no binding legal framework has yet done — is define, with mathematical precision, <em>when</em> that human must intervene.
+    </p>
+
+    <div class="pull-quote">
+      <p>"The world's AI governance frameworks tell us that the human must be in the loop. None yet tells us precisely at which moment the loop requires them."</p>
+    </div>
+
+    <p>
+      This gap is not merely academic. In practice, decision-makers, operators, and developers face a deeply ambiguous standard of care. A military commander who relies on an AI targeting recommendation faces no established threshold defining when reliance constitutes gross negligence. A legal counsel using AI-generated analysis in an active conflict faces no codified duty to scrutinise outputs that fall outside acceptable confidence bounds.
+    </p>
+
+    <p>
+      The doctrine of "best efforts" and "reasonable care" — inherited from tort law — cannot be stretched to cover systems that operate not on logic but on learned probability distributions. We need new architecture.
+    </p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 2 -->
+  <div class="section">
+    <span class="section-number">Section II</span>
+    <h2>From Nascent Technology to Decisive Actor: <em>The Aviation Parallel</em></h2>
+
+    <p>
+      Every transformative technology begins its legal life in a state of tolerated uncertainty. In the early decades of commercial aviation, liability frameworks were deliberately tempered by the principle known in Islamic jurisprudence as <strong>Al-Ghurm bil-Ghunm</strong> — broadly translated as "the burden is commensurate with the benefit." If a passenger chose to fly knowing the risks, they bore a portion of those risks. Courts and regulators reflected this by limiting airline liability in the technology's formative years.
+    </p>
+
+    <p>
+      This was not moral indifference. It was rational policy: innovation requires space to fail safely, to iterate, to mature. Society accepts higher risk thresholds for nascent technologies because the societal gain from their development justifies the exposure.
+    </p>
+
+    <div class="callout">
+      <div class="callout-icon">⚖</div>
+      <div class="callout-body">
+        <strong>The Al-Ghurm bil-Ghunm Principle in AI Context</strong>
+        <p>Early AI deployment in low-stakes environments — recommendation engines, content curation, logistics optimisation — reasonably attracted reduced liability exposure. The user derived benefit from the system and absorbed proportionate risk. This calculus holds where errors are recoverable and consequences bounded.</p>
+      </div>
+    </div>
+
+    <p>
+      AI has crossed that threshold. It is no longer a nascent curiosity operating at the margins of human decision-making. It now operates at its centre — in courtrooms, hospital triage systems, financial markets, and, most critically, in active armed conflict. When an AI system contributes to the identification of a military target, or generates a legal memorandum advising on the permissibility of a strike, it is a decisive actor. The "nascent technology" defence is no longer tenable.
+    </p>
+
+    <p>
+      Aviation reached this same inflection point. Once it became mass transportation infrastructure, liability frameworks shifted. Strict liability replaced assumed risk. Regulatory standards became exacting. <strong>AI is at its own inflection point now.</strong>
+    </p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 3 -->
+  <div class="section">
+    <span class="section-number">Section III</span>
+    <h2>The Statistical Model: Normal Distribution as Legal Threshold</h2>
+
+    <p>
+      The foundational insight of this framework is deceptively simple: <strong>AI hallucination is not a defect to be fixed. It is a mathematical reality to be governed.</strong>
+    </p>
+
+    <p>
+      Large language models, predictive systems, and generative AI do not reason deterministically. They sample from learned probability distributions. This means that for any given input, an AI system does not produce a singular correct output — it produces an output that is, in essence, a weighted draw from a statistical space. Most draws will cluster around a mean. A small but irreducible proportion will fall in the tails — statistically improbable, potentially erroneous, potentially dangerous.
+    </p>
+
+    <h3>The Core Statistical Architecture</h3>
+
+    <p>
+      For each deployment domain — medical diagnosis, legal analysis, military intelligence — the AI system's output distribution can be characterised and studied. Over sufficient observation, this distribution approximates a <strong>Normal (Gaussian) Curve</strong>. This is not a simplification; it is a measurable, domain-specific empirical reality.
+    </p>
+
+    <div class="curve-container">
+      <div class="curve-label">Figure 1 · Gaussian Output Distribution — Legal Threshold Model</div>
+      <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
+        <defs>
+          <clipPath id="leftClip"><rect x="0" y="0" width="137" height="260"/></clipPath>
+          <clipPath id="rightClip"><rect x="563" y="0" width="137" height="260"/></clipPath>
+          <clipPath id="midClip"><rect x="137" y="0" width="426" height="260"/></clipPath>
+        </defs>
+
+        <!-- Red tail fills -->
+        <path d="M70,220 Q90,218 110,200 Q120,185 137,140 L137,220 Z" fill="#FDDCDC" clip-path="url(#leftClip)"/>
+        <path d="M563,140 Q580,185 590,200 Q610,218 630,220 L563,220 Z" fill="#FDDCDC" clip-path="url(#rightClip)"/>
+
+        <!-- Amber mid fills -->
+        <path d="M137,140 Q155,95 175,68 L175,220 L137,220 Z" fill="#FDF3DC"/>
+        <path d="M525,68 Q545,95 563,140 L563,220 L525,220 Z" fill="#FDF3DC"/>
+
+        <!-- Green center fill -->
+        <path d="M175,68 Q225,22 350,18 Q475,22 525,68 L525,220 L175,220 Z" fill="#DFF2E8"/>
+
+        <!-- Main bell curve -->
+        <path d="M70,220 Q90,218 110,200 Q120,185 137,140 Q155,95 175,68 Q225,22 350,18 Q475,22 525,68 Q545,95 563,140 Q580,185 590,200 Q610,218 630,220"
+              fill="none" stroke="#0D1B2A" stroke-width="2"/>
+
+        <!-- Baseline -->
+        <line x1="60" y1="220" x2="640" y2="220" stroke="#D4C9B0" stroke-width="0.5"/>
+
+        <!-- Threshold lines -->
+        <line x1="137" y1="38" x2="137" y2="220" stroke="#C9A84C" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="175" y1="38" x2="175" y2="220" stroke="#2D8653" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="525" y1="38" x2="525" y2="220" stroke="#2D8653" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="563" y1="38" x2="563" y2="220" stroke="#C9A84C" stroke-width="1" stroke-dasharray="5,4"/>
+
+        <!-- Zone labels -->
+        <text x="103" y="190" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#C92B2B" letter-spacing="1">OUTLIER</text>
+        <text x="156" y="190" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#D4860F" letter-spacing="1">AMBER</text>
+        <text x="350" y="195" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#2D8653" letter-spacing="1">CONFIDENCE INTERVAL — AUTOMATION ZONE</text>
+        <text x="544" y="190" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#D4860F" letter-spacing="1">AMBER</text>
+        <text x="597" y="190" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#C92B2B" letter-spacing="1">OUTLIER</text>
+
+        <!-- SD labels -->
+        <text x="137" y="32" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#C9A84C">−2σ</text>
+        <text x="175" y="32" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#0D1B2A">−1σ</text>
+        <text x="350" y="12" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#0D1B2A">μ</text>
+        <text x="525" y="32" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#0D1B2A">+1σ</text>
+        <text x="563" y="32" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#C9A84C">+2σ</text>
+      </svg>
+    </div>
+
+    <h3>The Legal Translation</h3>
+
+    <p>
+      The transformative step this framework proposes is to treat the statistical properties of this distribution not merely as engineering metrics, but as <strong>legally operative thresholds</strong>. Where an AI output falls on the distribution determines the legal standard of care required of the human actor.
+    </p>
+
+    <div class="formula-box">
+      <span class="formula-label">Governing Principle</span>
+      <div class="formula-text">
+        Legal Obligation = f ( |Output − μ| / σ , Decision Stakes )
+      </div>
+      <span class="formula-note">As statistical deviation increases, human oversight obligation escalates proportionally with decision stakes.</span>
+    </div>
+
+    <p>
+      This is not metaphor. Domain-specific confidence intervals, calibrated by expert panels and regulatory bodies within each field, establish the quantitative bounds of permissible automation. An output within the confidence interval carries a presumption of permissible reliance. An output in the tails — a statistical outlier — carries a legal presumption of heightened risk, triggering mandatory human review.
+    </p>
+
+    <p>
+      Failure to review an outlier output before acting on it is not merely a technical oversight. Under this framework, it constitutes <strong>gross negligence per se</strong>.
+    </p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 4 -->
+  <div class="section">
+    <span class="section-number">Section IV</span>
+    <h2>Three Governance Zones: A Framework for Tiered Accountability</h2>
+
+    <p>
+      The Normal Distribution framework yields three distinct governance zones, each with clearly defined rights, obligations, and legal consequences. The confidence thresholds defining each zone are domain-specific — set by a competent regulatory authority or expert body — and scale with the gravity of the decisions at stake.
+    </p>
+
+    <div class="zones-grid">
+      <div class="zone-card green">
+        <div class="zone-indicator"></div>
+        <span class="zone-label">Zone I — Safe</span>
+        <div class="zone-title">Green Zone</div>
+        <p class="zone-desc">Output falls within the established confidence interval. Statistical behaviour is in-distribution. Automated action is legally permissible under the Al-Ghurm bil-Ghunm principle — risk has been pre-quantified and accepted.</p>
+        <div class="zone-threshold">CI ≥ 95% (standard) · 99%+ (critical)</div>
+      </div>
+
+      <div class="zone-card amber">
+        <div class="zone-indicator"></div>
+        <span class="zone-label">Zone II — Advisory</span>
+        <div class="zone-title">Amber Zone</div>
+        <p class="zone-desc">Output falls between 1σ and 2σ from mean. Statistical reliability is reduced. Human oversight is required — a qualified expert must review before any consequential action is taken. Non-review triggers elevated negligence exposure.</p>
+        <div class="zone-threshold">Output at 1σ–2σ deviation</div>
+      </div>
+
+      <div class="zone-card red">
+        <div class="zone-indicator"></div>
+        <span class="zone-label">Zone III — Danger</span>
+        <div class="zone-title">Red Zone — Outlier</div>
+        <p class="zone-desc">Output is a statistical outlier beyond 2σ. Potential hallucination or error. Human-in-the-loop is an absolute legal necessity, not a discretionary safeguard. Automated action without review constitutes gross negligence and may attract criminal liability in conflict contexts.</p>
+        <div class="zone-threshold">Output beyond 2σ — zero automation</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-icon">⚑</div>
+      <div class="callout-body">
+        <strong>Risk-Weighted Thresholds: The Stakes Scalar</strong>
+        <p>Confidence thresholds are not uniform. A film recommendation system may operate acceptably at 80% CI. A medical diagnostic tool requires 95%+. A military targeting system in armed conflict demands 99.9% CI with mandatory triple human review for any output classified as an Outlier. The stakes of the decision multiply the governance obligation.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 5 -->
+  <div class="section">
+    <span class="section-number">Section V</span>
+    <h2>Liability Mapping: Who Bears Responsibility — and When</h2>
+
+    <p>
+      Under traditional legal frameworks, liability in AI systems is allocated through post-hoc analysis, often after harm has occurred. This framework proposes a <strong>prospective liability map</strong>: responsibility is pre-assigned by role, and its weight scales with where on the distribution the acting output fell.
+    </p>
+
+    <table class="liability-table">
+      <thead>
+        <tr>
+          <th>Actor</th>
+          <th>Primary Obligation</th>
+          <th>Liability Trigger</th>
+          <th>Aggravating Factor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Developer</td>
+          <td>Design systems that compute and communicate output confidence. Disclose domain-specific distribution behaviour.</td>
+          <td>Failure to implement confidence reporting. Concealment of known distribution failures.</td>
+          <td>Deployment in high-stakes environments without adequate uncertainty quantification architecture.</td>
+        </tr>
+        <tr>
+          <td>Operator</td>
+          <td>Establish domain-specific confidence thresholds. Ensure Amber/Red Zone outputs trigger human review protocols.</td>
+          <td>Absence of zone-based review protocols. Permitting automated action on Outlier outputs.</td>
+          <td>Active suppression of override mechanisms. Incentivising speed over statistical safety.</td>
+        </tr>
+        <tr>
+          <td>Decision-maker</td>
+          <td>Treat Outlier-flagged outputs as presumptively suspect. Apply independent professional judgment before acting.</td>
+          <td>Reliance on Outlier output without review, especially where zones are disclosed.</td>
+          <td>Context of armed conflict, where IHL obligations heighten the standard of care.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>The Conflict Context Multiplier</h3>
+
+    <p>
+      International Humanitarian Law — specifically the principles of distinction and proportionality under the Geneva Conventions and their Additional Protocols — imposes affirmative, non-delegable duties on combatants and command structures. These duties cannot be discharged to an algorithm.
+    </p>
+
+    <p>
+      Where an AI system is used to support targeting, intelligence assessment, or legality review in armed conflict, and where that system produces an Outlier output that is acted upon without human review, the resulting harm is not a technical error. It is a potential war crime. The liability chain runs from the decision-maker through the operator to, in appropriate cases, the developer — and may extend to command responsibility under international criminal law.
+    </p>
+
+    <div class="pull-quote">
+      <p>"War does not suspend law — it submits law to its most severe examination. And in that examination, the excuse of algorithmic error will not survive scrutiny."</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 6: PRINCIPLES -->
+  <div class="section">
+    <span class="section-number">Section VI</span>
+    <h2>Core Principles of Probabilistic AI Governance</h2>
+
+    <ul class="principles-list">
+      <li>
+        <span class="principle-num">01</span>
+        <div class="principle-text">
+          <strong>Hallucination as Governance Reality, Not Engineering Failure</strong>
+          <span>AI systems are probabilistic by design. Output errors in the statistical tails are mathematically inevitable. Governance must be designed around this reality — not in the expectation that it will be engineered away.</span>
+        </div>
+      </li>
+      <li>
+        <span class="principle-num">02</span>
+        <div class="principle-text">
+          <strong>Calibrated Confidence as Legal Instrument</strong>
+          <span>The confidence interval of an AI system's output, calculated against its domain-specific distribution, is not merely an engineering metric. It is a legally operative threshold that determines the standard of care owed by each actor in the chain.</span>
+        </div>
+      </li>
+      <li>
+        <span class="principle-num">03</span>
+        <div class="principle-text">
+          <strong>Human-in-the-Loop as Triggered Obligation, Not Constant Burden</strong>
+          <span>Mandatory human review should not be distributed uniformly across all AI outputs — this is inefficient and unworkable at scale. Review is triggered when outputs enter the Amber or Red Zones, making oversight targeted, expert, and proportionate to actual risk.</span>
+        </div>
+      </li>
+      <li>
+        <span class="principle-num">04</span>
+        <div class="principle-text">
+          <strong>Domain-Specific Threshold Setting by Competent Authority</strong>
+          <span>Confidence interval thresholds cannot be generic. Each deployment domain requires thresholds calibrated by qualified experts in that field — medical, legal, military — reflecting the actual consequences of erroneous outputs in that context.</span>
+        </div>
+      </li>
+      <li>
+        <span class="principle-num">05</span>
+        <div class="principle-text">
+          <strong>Proportional Liability Across the Distribution Chain</strong>
+          <span>Legal responsibility flows proportionally: from developer (design obligation), to operator (deployment obligation), to decision-maker (reliance obligation). The weight of each actor's liability scales with the deviation of the output from the distribution mean and the stakes of the decision.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- CONCLUSION -->
+  <div class="conclusion-block">
+    <span class="section-number" style="color: var(--gold-light);">Conclusion</span>
+    <h2>Redesigning Decision-Making for the Probabilistic Era</h2>
+    <p>
+      The central challenge of AI governance is not technical. It is conceptual. Legal systems built on deterministic logic — where a professional either met the standard of care or did not — are ill-equipped to adjudicate failures in systems that speak only in probabilities.
+    </p>
+    <p>
+      <strong>The question is not whether AI is accurate. The question is: at what point on its output distribution was this decision taken, and was a qualified human present to exercise judgment when the mathematics demanded it?</strong>
+    </p>
+    <p>
+      The framework advanced in this paper — the Probabilistic AI Governance model grounded in the Normal Distribution as legal threshold — offers a path forward. It does not seek to stop AI from operating autonomously. It seeks to redesign the architecture of decision-making so that automation and human judgment are not alternatives, but <strong>partners governed by statistical law</strong>.
+    </p>
+    <p>
+      In the most dangerous environments human beings have ever created — armed conflicts, life-critical medical decisions, irreversible legal determinations — the need for precision, accountability, and principled governance has never been more urgent.
+    </p>
+    <p style="margin-top: 24px;">
+      <strong>The probability does not decide. The human does. But only if we design the system to demand it.</strong>
+    </p>
+  </div>
+
+  <!-- KEYWORDS -->
+  <div class="keywords">
+    <span class="keyword">#LawInCode</span>
+    <span class="keyword">#AIGovernance</span>
+    <span class="keyword">#ResponsibleAI</span>
+    <span class="keyword">#ProbabilisticGovernance</span>
+    <span class="keyword">#HumanInTheLoop</span>
+    <span class="keyword">#InternationalHumanitarianLaw</span>
+    <span class="keyword">#AILiability</span>
+    <span class="keyword">#LegalTech</span>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <span>© 2026 AYA SAMIR &nbsp;·&nbsp; ALL RIGHTS RESERVED</span>
+    <span>WHITE PAPER &nbsp;·&nbsp; FIRST EDITION &nbsp;·&nbsp; APRIL 2026</span>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>
